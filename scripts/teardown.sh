@@ -3,7 +3,7 @@
 # Ingresses create AWS load balancers OUTSIDE Terraform's state; deleting them
 # first prevents orphaned ELBs that block VPC/subnet destruction.
 #
-# Usage: ./scripts/teardown.sh <cluster-name> <region>
+# Usage: ./scripts/teardown.sh eks-gitops-prod us-east-1
 set -euo pipefail
 
 CLUSTER="${1:?cluster name required}"

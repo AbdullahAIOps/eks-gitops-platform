@@ -17,7 +17,7 @@ spec:
           name: aws-load-balancer-controller
           annotations:
             # Paste: terraform output -raw alb_controller_role_arn
-            eks.amazonaws.com/role-arn: arn:aws:iam::<ACCOUNT_ID>:role/eks-gitops-dev-alb-controller
+            eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/eks-gitops-dev-alb-controller
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

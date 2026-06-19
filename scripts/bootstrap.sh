@@ -2,7 +2,7 @@
 # Create the remote-state backend: an encrypted, versioned S3 bucket and a
 # DynamoDB table for state locking. Run once per environment.
 #
-# Usage: ./scripts/bootstrap.sh <bucket> <lock-table> <region>
+# Usage: ./scripts/bootstrap.sh abdullah-gitops-tfstate abdullah-gitops-tflocks us-east-1
 set -euo pipefail
 
 BUCKET="${1:?bucket name required}"

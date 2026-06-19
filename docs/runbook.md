@@ -1,6 +1,6 @@
 # Runbook
 
-Operational procedures for the platform. Assumes `make kubeconfig ENV=<env>` has been run.
+Operational procedures for the platform. Assumes `make kubeconfig ENV=dev` has been run.
 
 ## Accessing ArgoCD
 ```bash
@@ -24,20 +24,20 @@ Install a policy controller (e.g. Sigstore policy-controller or Kyverno) and
 require a valid Cosign signature for the ECR repo. Example Kyverno rule lives
 in the `devsecops-supply-chain` companion repo. Verify manually:
 ```bash
-cosign verify <ACCOUNT_ID>.dkr.ecr.eu-central-1.amazonaws.com/eks-gitops/demo-app:<tag> \
+cosign verify 123456789012.dkr.ecr.eu-central-1.amazonaws.com/eks-gitops/demo-app:latest \
   --certificate-identity-regexp '.*' --certificate-oidc-issuer-regexp '.*'
 ```
 
 ## Common incidents
 | Symptom | Likely cause | Action |
 |---|---|---|
-| Application stuck `OutOfSync` | drift or failed hook | `kubectl -n argocd describe application <name>`; check ArgoCD UI events |
+| Application stuck `OutOfSync` | drift or failed hook | `kubectl -n argocd describe application demo-app`; check ArgoCD UI events |
 | `terraform destroy` hangs on subnet | orphaned ALB/NLB | run `scripts/teardown.sh` first (deletes Ingress/LB Services) |
 | Pods `CreateContainerConfigError` | ExternalSecret not synced | check ESO logs; confirm AWS secret exists + IRSA ARN is correct |
 | CI cannot push to ECR | role/branch mismatch | confirm `AWS_ROLE_TO_ASSUME` + trust policy `sub` matches branch |
 
 ## Upgrading Kubernetes
 1. Bump `cluster_version` in the env tfvars (one minor at a time).
-2. `make plan ENV=<env>` and review.
+2. `make plan ENV=dev` and review.
 3. Apply; the module upgrades the control plane, then roll node groups.
 4. Re-validate add-on compatibility (ArgoCD shows any drift).

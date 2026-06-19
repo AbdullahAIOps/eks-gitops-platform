@@ -3,7 +3,7 @@ replicaCount: 2
 
 image:
   # The image built/scanned/signed by .github/workflows/ci.yaml and pushed to ECR.
-  repository: <ACCOUNT_ID>.dkr.ecr.eu-central-1.amazonaws.com/eks-gitops/demo-app
+  repository: 123456789012.dkr.ecr.eu-central-1.amazonaws.com/eks-gitops/demo-app
   tag: "latest"   # CI bumps this to the signed image tag
   pullPolicy: IfNotPresent
 
@@ -12,7 +12,7 @@ serviceAccount:
   name: ""
   # If the app needs AWS access, set an IRSA role ARN here:
   # annotations:
-  #   eks.amazonaws.com/role-arn: arn:aws:iam::<acct>:role/<role>
+  #   eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/eks-gitops-role
 
 service:
   type: ClusterIP

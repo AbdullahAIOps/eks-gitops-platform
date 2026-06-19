@@ -59,7 +59,7 @@ variable "node_max_size" {
 variable "github_repository" {
   description = "owner/repo allowed to assume the CI role via GitHub OIDC."
   type        = string
-  default     = "your-org/eks-gitops-platform"
+  default     = "AbdullahAIOps/eks-gitops-platform"
 }
 
 variable "argocd_chart_version" {

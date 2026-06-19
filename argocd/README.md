@@ -29,5 +29,5 @@ terraform -chdir=terraform output -raw external_secrets_role_arn
 config repo; kept explicit here for clarity — see docs/runbook.md.)
 
 ## Replace before use
-- `<REPO_URL>` -> the HTTPS URL of your fork of this repo.
-- `<ACCOUNT_ID>` and role ARNs -> from `terraform output`.
+- `https://github.com/AbdullahAIOps/eks-gitops-platform` -> the HTTPS URL of your fork of this repo.
+- `123456789012` and role ARNs -> from `terraform output`.

@@ -53,7 +53,7 @@ flowchart LR
 ## Identity boundaries
 | Principal | Mechanism | Scope |
 |---|---|---|
-| GitHub Actions | OIDC federation -> IAM role | `repo:<owner>/<repo>:ref:refs/heads/main` only |
+| GitHub Actions | OIDC federation -> IAM role | `repo:AbdullahAIOps/eks-gitops-platform:ref:refs/heads/main` only |
 | External Secrets pod | IRSA | read `eks-gitops/*` secrets/params only |
 | ALB controller pod | IRSA | ELB/EC2 describe + manage |
 | EBS CSI controller | IRSA | EBS volume lifecycle |

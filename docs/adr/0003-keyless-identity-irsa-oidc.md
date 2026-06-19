@@ -11,7 +11,7 @@ are painful to rotate. We want zero static cloud secrets.
 
 ## Decision
 - **CI -> AWS:** GitHub Actions assumes an IAM role via OIDC federation, with a
-  trust policy scoped to `repo:<owner>/<repo>:ref:refs/heads/main`. Tokens are
+  trust policy scoped to `repo:AbdullahAIOps/eks-gitops-platform:ref:refs/heads/main`. Tokens are
   short-lived and minted per run.
 - **Pods -> AWS:** workloads use IRSA (IAM Roles for Service Accounts), each
   scoped to least privilege.

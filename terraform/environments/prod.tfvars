@@ -7,4 +7,4 @@ node_instance_types = ["m5.xlarge"]
 node_desired_size  = 3
 node_min_size      = 3
 node_max_size      = 10
-github_repository  = "your-org/eks-gitops-platform"
+github_repository  = "AbdullahAIOps/eks-gitops-platform"

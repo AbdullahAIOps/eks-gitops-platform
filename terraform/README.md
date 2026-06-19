@@ -12,7 +12,7 @@ CI role, and the ArgoCD bootstrap install.
   `multicloud-terraform-landing-zone`.)
 - **One root module, many environments.** State is isolated per environment via
   the partial S3 backend (`-backend-config` at init), and inputs come from
-  `environments/<env>.tfvars`. No `terraform workspace` magic — explicit is
+  `environments/dev.tfvars`. No `terraform workspace` magic — explicit is
   better.
 - **`modules/`** is reserved for thin internal wrappers (e.g. an opinionated
   `platform-namespace` module). It is intentionally empty in this repo.
@@ -45,7 +45,7 @@ make apply ENV=dev
 | vpc_cidr | VPC CIDR | string | "10.0.0.0/16" |
 | single_nat_gateway | Single NAT (cheaper) vs one per AZ | bool | true |
 | node_instance_types | Default node group instance types | list(string) | ["m5.large"] |
-| github_repository | owner/repo allowed to assume the CI role | string | "your-org/eks-gitops-platform" |
+| github_repository | owner/repo allowed to assume the CI role | string | "AbdullahAIOps/eks-gitops-platform" |
 
 ## Outputs
 

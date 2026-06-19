@@ -9,7 +9,7 @@ metadata:
 spec:
   project: platform
   source:
-    repoURL: <REPO_URL>
+    repoURL: https://github.com/AbdullahAIOps/eks-gitops-platform
     targetRevision: main
     path: argocd/applications
     directory:

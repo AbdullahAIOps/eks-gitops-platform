@@ -6,7 +6,7 @@ metadata:
 spec:
   description: Platform add-ons and demo workloads.
   sourceRepos:
-    - <REPO_URL>
+    - https://github.com/AbdullahAIOps/eks-gitops-platform
     - https://aws.github.io/eks-charts
     - https://charts.external-secrets.io
     - https://prometheus-community.github.io/helm-charts

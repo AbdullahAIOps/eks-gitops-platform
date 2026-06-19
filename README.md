@@ -121,7 +121,7 @@ make teardown ENV=dev
 
 ## Security model (the short version)
 
-- **No static cloud credentials.** CI authenticates to AWS through a GitHub OIDC provider and assumes an IAM role whose trust policy is scoped to `repo:<owner>/<repo>:ref:refs/heads/main`. See [`terraform/github-oidc.tf`](terraform/github-oidc.tf).
+- **No static cloud credentials.** CI authenticates to AWS through a GitHub OIDC provider and assumes an IAM role whose trust policy is scoped to `repo:AbdullahAIOps/eks-gitops-platform:ref:refs/heads/main`. See [`terraform/github-oidc.tf`](terraform/github-oidc.tf).
 - **Least-privilege pods.** Workloads that need AWS (External Secrets, the ALB controller) use IRSA roles, not node instance profiles.
 - **Secrets stay out of Git.** Only `ExternalSecret` *references* are committed; the actual values are pulled from AWS Secrets Manager at runtime.
 - **Signed images only.** The CI pipeline signs images with Cosign (keyless, Fulcio/Rekor). The cluster can enforce signature verification at admission (documented in the runbook).
