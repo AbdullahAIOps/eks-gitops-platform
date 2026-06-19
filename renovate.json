@@ -1,0 +1,23 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":dependencyDashboard"],
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Group GitHub Action bumps into one PR",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    },
+    {
+      "description": "Auto-merge patch-level Terraform provider bumps",
+      "matchManagers": ["terraform"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true
+    },
+    {
+      "description": "Surface Helm chart updates referenced by ArgoCD Applications",
+      "matchManagers": ["argocd", "helm-values", "helmv3"]
+    }
+  ],
+  "argocd": { "fileMatch": ["argocd/applications/.+\\.yaml$"] }
+}

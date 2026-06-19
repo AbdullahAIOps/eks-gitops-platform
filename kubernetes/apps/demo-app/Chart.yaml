@@ -1,0 +1,8 @@
+apiVersion: v2
+name: demo-app
+description: Example HTTP workload demonstrating production defaults on the platform.
+type: application
+version: 0.1.0
+appVersion: "6.7.0"
+maintainers:
+  - name: platform-team

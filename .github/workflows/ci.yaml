@@ -1,0 +1,101 @@
+name: ci
+
+# Build, scan, SBOM, sign the app image, then bump the GitOps tag.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - ".github/workflows/ci.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: write      # to commit the image-tag bump
+  id-token: write      # to assume the AWS role via OIDC (keyless)
+
+env:
+  AWS_REGION: eu-central-1
+  ECR_REPOSITORY: eks-gitops/demo-app
+
+jobs:
+  build-scan-sign:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC, no static keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}   # = terraform output github_ci_role_arn
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Compute image reference
+        id: meta
+        run: |
+          REGISTRY="${{ steps.ecr.outputs.registry }}"
+          TAG="${GITHUB_SHA::12}"
+          echo "image=${REGISTRY}/${ECR_REPOSITORY}:${TAG}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image (load locally for scanning)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app
+          load: true
+          tags: ${{ steps.meta.outputs.image }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Scan image with Trivy (fail on HIGH/CRITICAL)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ${{ steps.meta.outputs.image }}
+          format: sarif
+          output: trivy.sarif
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
+
+      - name: Upload scan results to GitHub Security
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy.sarif
+
+      - name: Push image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app
+          push: true
+          tags: ${{ steps.meta.outputs.image }}
+          cache-from: type=gha
+
+      - name: Generate SBOM (Syft)
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ steps.meta.outputs.image }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Sign image + attest SBOM (Cosign keyless)
+        uses: sigstore/cosign-installer@v3
+      - run: |
+          cosign sign --yes ${{ steps.meta.outputs.image }}
+          cosign attest --yes --predicate sbom.spdx.json \
+            --type spdxjson ${{ steps.meta.outputs.image }}
+
+      - name: Bump GitOps image tag (commit back to repo)
+        run: |
+          sed -i "s|^  tag:.*|  tag: \"${{ steps.meta.outputs.tag }}\"|" \
+            kubernetes/apps/demo-app/values.yaml
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add kubernetes/apps/demo-app/values.yaml
+          git commit -m "chore(deploy): demo-app -> ${{ steps.meta.outputs.tag }} [skip ci]" || echo "no change"
+          git push

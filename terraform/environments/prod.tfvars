@@ -1,0 +1,10 @@
+environment        = "prod"
+region             = "eu-central-1"
+cluster_version    = "1.32"
+vpc_cidr           = "10.30.0.0/16"
+single_nat_gateway = false           # one NAT per AZ for HA in prod
+node_instance_types = ["m5.xlarge"]
+node_desired_size  = 3
+node_min_size      = 3
+node_max_size      = 10
+github_repository  = "your-org/eks-gitops-platform"

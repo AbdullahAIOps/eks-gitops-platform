@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aws-load-balancer-controller
+  namespace: argocd
+spec:
+  project: platform
+  source:
+    repoURL: https://aws.github.io/eks-charts
+    chart: aws-load-balancer-controller
+    targetRevision: 1.8.1
+    helm:
+      values: |
+        clusterName: eks-gitops-dev
+        serviceAccount:
+          create: true
+          name: aws-load-balancer-controller
+          annotations:
+            # Paste: terraform output -raw alb_controller_role_arn
+            eks.amazonaws.com/role-arn: arn:aws:iam::<ACCOUNT_ID>:role/eks-gitops-dev-alb-controller
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }

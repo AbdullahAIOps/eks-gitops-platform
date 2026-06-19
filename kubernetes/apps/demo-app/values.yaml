@@ -1,0 +1,72 @@
+# Default values for demo-app.
+replicaCount: 2
+
+image:
+  # The image built/scanned/signed by .github/workflows/ci.yaml and pushed to ECR.
+  repository: <ACCOUNT_ID>.dkr.ecr.eu-central-1.amazonaws.com/eks-gitops/demo-app
+  tag: "latest"   # CI bumps this to the signed image tag
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  name: ""
+  # If the app needs AWS access, set an IRSA role ARN here:
+  # annotations:
+  #   eks.amazonaws.com/role-arn: arn:aws:iam::<acct>:role/<role>
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+  hosts:
+    - host: demo.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 8
+  targetCPUUtilizationPercentage: 70
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+
+networkPolicy:
+  enabled: true
+
+# Hardened pod-level security context (non-root, read-only fs, no privilege escalation).
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 100
+  fsGroup: 100
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

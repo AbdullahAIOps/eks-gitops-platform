@@ -1,0 +1,10 @@
+environment        = "dev"
+region             = "eu-central-1"
+cluster_version    = "1.32"
+vpc_cidr           = "10.10.0.0/16"
+single_nat_gateway = true            # one NAT to save cost in dev
+node_instance_types = ["m5.large"]
+node_desired_size  = 2
+node_min_size      = 2
+node_max_size      = 4
+github_repository  = "your-org/eks-gitops-platform"

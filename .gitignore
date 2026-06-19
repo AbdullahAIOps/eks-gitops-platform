@@ -1,0 +1,37 @@
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars.local
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+.terraform.lock.hcl.bak
+tfplan
+*.tfplan
+
+# Credentials / secrets (defence in depth — these must never be committed)
+*.pem
+*.key
+.env
+.env.*
+kubeconfig*
+*-kubeconfig.yaml
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Tooling output
+*.sarif
+sbom.*.json
+cosign.key
+cosign.pub
